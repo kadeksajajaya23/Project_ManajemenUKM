@@ -15,3 +15,12 @@ CREATE TABLE IF NOT EXISTS anggota (
     role VARCHAR(20) DEFAULT 'Anggota'
 );
 
+-- Tabel Portofolio
+CREATE TABLE IF NOT EXISTS portofolio (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    anggota_id INT,
+    judul_karya VARCHAR(100),
+    file_path VARCHAR(255),
+    FOREIGN KEY (anggota_id) REFERENCES anggota(id) ON DELETE CASCADE
+);
+
