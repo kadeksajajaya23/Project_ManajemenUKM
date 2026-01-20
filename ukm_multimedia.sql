@@ -24,3 +24,6 @@ CREATE TABLE IF NOT EXISTS portofolio (
     FOREIGN KEY (anggota_id) REFERENCES anggota(id) ON DELETE CASCADE
 );
 
+-- AKUN SUPER ADMIN 
+INSERT INTO anggota (nomor_anggota, nim, nama, kelas, divisi, username, password, role) 
+VALUES ('MM-INTI-001', '00000', 'Super Admin', 'Inti', 'Pengurus', 'Saja_Jaya', 'Multimedia26', 'Admin');
