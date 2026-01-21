@@ -1,5 +1,5 @@
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class MainMenuFrame extends JFrame {
 
@@ -30,7 +30,9 @@ public class MainMenuFrame extends JFrame {
         add(sidebar, BorderLayout.WEST);
         add(centerText, BorderLayout.CENTER);
 
-        
+        btnKetua.addActionListener(e -> openLogin("ketua"));
+        btnPengurus.addActionListener(e -> openLogin("pengurus"));
+        btnAnggota.addActionListener(e -> openLogin("anggota"));
     }
 
     private JButton menuButton(String text) {
