@@ -28,4 +28,19 @@ public class LoginFrame extends JFrame {
         setLocationRelativeTo(null);
         initUI();
     }
-}
+
+    // ===== UI =====
+    private void initUI() {
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        Style.stylePanel(panel);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 10, 6, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        lblTitle = new JLabel("", SwingConstants.CENTER);
+        lblTitle.setFont(Style.FONT_HEADER);
+        lblTitle.setForeground(Style.COLOR_ACCENT);
+
+    }
