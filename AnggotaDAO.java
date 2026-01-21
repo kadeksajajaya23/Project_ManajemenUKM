@@ -37,5 +37,46 @@ public class AnggotaDAO {
         }
     }
 
-    
+
+    public Anggota login(String user, String pass) {
+        System.out.println("Sedang mencoba login...");
+        System.out.println("Username input: " + user);
+        System.out.println("Password input: " + pass);
+
+        Anggota a = null;
+        String sql = "SELECT * FROM anggota WHERE username=? AND password=?";
+        
+        try (Connection conn = Koneksi.getConnection()) {
+            if(conn == null) {
+                System.out.println("KONEKSI DATABASE GAGAL! Cek file Koneksi.java atau XAMPP.");
+                return null;
+            }
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, user); 
+            ps.setString(2, pass);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                System.out.println("User DITEMUKAN di database!");
+                a = new Anggota();
+                a.setId(rs.getInt("id"));
+                a.setNomorAnggota(rs.getString("nomor_anggota"));
+                a.setNim(rs.getString("nim"));
+                a.setNama(rs.getString("nama"));
+                a.setDivisi(rs.getString("divisi"));
+                a.setFotoPath(rs.getString("foto_path"));
+                a.setRole(rs.getString("role"));
+            } else {
+                System.out.println("User TIDAK DITEMUKAN. Username/Password salah.");
+            }
+        } catch (SQLException e) { 
+            System.out.println("ERROR SQL: " + e.getMessage());
+            e.printStackTrace(); 
+        }
+        return a;
+    }
+
+   
 }
