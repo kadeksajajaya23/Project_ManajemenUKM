@@ -196,5 +196,20 @@ public class LoginFrame extends JFrame {
         }
     }
 
-    
+    // ===== UPLOAD FOTO =====
+    private void uploadFoto() {
+        JFileChooser fc = new JFileChooser();
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = fc.getSelectedFile();
+                File dest = new File("uploads/" + System.currentTimeMillis() + "_" + file.getName());
+                dest.getParentFile().mkdirs();
+                Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                selectedPhotoPath = dest.getPath();
+                lblFotoPreview.setText(file.getName());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }
