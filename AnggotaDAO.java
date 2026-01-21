@@ -78,5 +78,30 @@ public class AnggotaDAO {
         return a;
     }
 
-   
+    public void uploadPortofolio(int idAnggota, String judul, String filePath) {
+        String sql = "INSERT INTO portofolio (anggota_id, judul_karya, file_path) VALUES (?,?,?)";
+        try (Connection conn = Koneksi.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idAnggota); ps.setString(2, judul); ps.setString(3, filePath); ps.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
+
+    public List<Anggota> cariAnggota(String keyword) {
+        List<Anggota> list = new ArrayList<>();
+        String sql = "SELECT * FROM anggota WHERE nama LIKE ? OR nim LIKE ? OR divisi LIKE ?";
+        try (Connection conn = Koneksi.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            String key = "%" + keyword + "%";
+            ps.setString(1, key); ps.setString(2, key); ps.setString(3, key);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Anggota a = new Anggota();
+                a.setId(rs.getInt("id")); a.setNomorAnggota(rs.getString("nomor_anggota"));
+                a.setNim(rs.getString("nim")); a.setNama(rs.getString("nama"));
+                a.setDivisi(rs.getString("divisi")); a.setRole(rs.getString("role"));
+                list.add(a);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
+
 }
