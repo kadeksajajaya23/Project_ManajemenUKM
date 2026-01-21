@@ -81,5 +81,120 @@ public class LoginFrame extends JFrame {
         btnSwitch.setBorderPainted(false);
         btnSwitch.setForeground(Color.WHITE);
 
+        // === LAYOUT ===
+        int y = 0;
+        gbc.gridx = 0;
+
+        gbc.gridy = y++; panel.add(lblTitle, gbc);
+        gbc.gridy = y++; panel.add(txtNim, gbc);
+        gbc.gridy = y++; panel.add(txtNama, gbc);
+        gbc.gridy = y++; panel.add(cmbKelas, gbc);
+        gbc.gridy = y++; panel.add(cmbDivisi, gbc);
+        gbc.gridy = y++; panel.add(cmbJabatan, gbc);
+        gbc.gridy = y++; panel.add(btnPilihFoto, gbc);
+        gbc.gridy = y++; panel.add(lblFotoPreview, gbc);
+
+        txtUser.setBorder(BorderFactory.createTitledBorder("Username"));
+        txtPass.setBorder(BorderFactory.createTitledBorder("Password"));
+
+        gbc.gridy = y++; panel.add(txtUser, gbc);
+        gbc.gridy = y++; panel.add(txtPass, gbc);
+        gbc.gridy = y++; panel.add(btnAction, gbc);
+        gbc.gridy = y++; panel.add(btnSwitch, gbc);
+
+        add(new JScrollPane(panel));
+
+        refreshMode();
+
+        // === EVENTS ===
+        btnSwitch.addActionListener(e -> {
+            isLoginMode = !isLoginMode;
+            refreshMode();
+        });
+
+        btnPilihFoto.addActionListener(e -> uploadFoto());
+
+        btnAction.addActionListener(e -> processAction());
+    }
+
+    // ===== MODE SWITCH =====
+    private void refreshMode() {
+
+        boolean isRegister = !isLoginMode;
+
+        txtNim.setVisible(isRegister);
+        txtNama.setVisible(isRegister);
+        btnPilihFoto.setVisible(isRegister);
+        lblFotoPreview.setVisible(isRegister);
+
+        cmbKelas.setVisible(false);
+        cmbDivisi.setVisible(false);
+        cmbJabatan.setVisible(false);
+
+        if (isRegister) {
+            txtNim.setBorder(BorderFactory.createTitledBorder("NIM"));
+            txtNama.setBorder(BorderFactory.createTitledBorder("Nama Lengkap"));
+
+            if (role.equalsIgnoreCase("anggota")) {
+                cmbKelas.setVisible(true);
+                cmbDivisi.setVisible(true);
+                cmbKelas.setBorder(BorderFactory.createTitledBorder("Pilih Kelas"));
+                cmbDivisi.setBorder(BorderFactory.createTitledBorder("Pilih Divisi"));
+            }
+            else if (role.equalsIgnoreCase("pengurus")) {
+                cmbJabatan.setVisible(true);
+            }
+        }
+
+        lblTitle.setText(isLoginMode
+                ? "LOGIN " + role.toUpperCase()
+                : "REGISTRASI " + role.toUpperCase());
+
+        btnAction.setText(isLoginMode ? "LOGIN" : "DAFTAR SEKARANG");
+        btnSwitch.setText(isLoginMode
+                ? "Belum punya akun? Daftar"
+                : "Sudah punya akun? Login");
+
+        revalidate();
+        repaint();
+    }
+
+    // ===== ACTION =====
+    private void processAction() {
+
+        AnggotaDAO dao = new AnggotaDAO();
+
+        if (isLoginMode) {
+            Anggota a = dao.login(
+                    txtUser.getText(),
+                    new String(txtPass.getPassword())
+            );
+
+           
+        }
+        else {
+            Anggota a = new Anggota();
+            a.setNim(txtNim.getText());
+            a.setNama(txtNama.getText());
+            a.setUsername(txtUser.getText());
+            a.setPassword(new String(txtPass.getPassword()));
+            a.setFotoPath(selectedPhotoPath);
+            a.setRole(role);
+
+            if (role.equalsIgnoreCase("anggota")) {
+                a.setKelas(cmbKelas.getSelectedItem().toString());
+                a.setDivisi(cmbDivisi.getSelectedItem().toString());
+            }
+
+            dao.register(a);
+
+            JOptionPane.showMessageDialog(this,
+                    "Registrasi " + role.toUpperCase() + " berhasil");
+
+            isLoginMode = true;
+            refreshMode();
+        }
+    }
+
     
 }
