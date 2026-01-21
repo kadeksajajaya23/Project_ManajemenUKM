@@ -103,5 +103,10 @@ public class AnggotaDAO {
         return list;
     }
 
-
+    public void delete(int id) {
+        String sql = "DELETE FROM anggota WHERE id=?";
+        try (Connection conn = Koneksi.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id); ps.executeUpdate();
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
 }
