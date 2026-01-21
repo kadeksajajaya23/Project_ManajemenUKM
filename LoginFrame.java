@@ -1,7 +1,12 @@
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import javax.swing.*;
 
 public class LoginFrame extends JFrame {
 
+    // ===== GLOBAL COMPONENT =====
     JLabel lblTitle;
 
     JTextField txtUser, txtNim, txtNama;
@@ -14,4 +19,13 @@ public class LoginFrame extends JFrame {
     String selectedPhotoPath = null;
     boolean isLoginMode = true;
 
+    // ===== CONSTRUCTOR ROLE =====
+    public LoginFrame(String role) {
+        this.role = role;
+        setTitle("UKM Multimedia System");
+        setSize(450, 750);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        initUI();
+    }
 }
