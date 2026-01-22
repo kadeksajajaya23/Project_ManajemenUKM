@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class MainMenuFrame extends JFrame {
 
@@ -43,5 +43,8 @@ public class MainMenuFrame extends JFrame {
         return b;
     }
 
-
+    private void openLogin(String role) {
+        dispose();
+        new LoginFrame(role).setVisible(true);
+    }
 }
