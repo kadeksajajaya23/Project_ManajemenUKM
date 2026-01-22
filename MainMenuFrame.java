@@ -4,15 +4,17 @@ import javax.swing.*;
 public class MainMenuFrame extends JFrame {
 
     public MainMenuFrame() {
-        setTitle("Main Menu");
-        setSize(900, 600);
+        setTitle("Main Menu - Sistem Informasi UKM Multimedia");
+        setSize(950, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        // --- 1. SIDEBAR (KIRI - NAVIGASI) ---
         JPanel sidebar = new JPanel(new GridLayout(3, 1, 15, 15));
-        sidebar.setBackground(new Color(30, 45, 60));
-        sidebar.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        sidebar.setBackground(new Color(30, 30, 30)); // Warna Gelap (Dark Theme)
+        sidebar.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
+        sidebar.setPreferredSize(new Dimension(240, 0)); // Lebar sidebar tetap
 
         JButton btnKetua = menuButton("Login Ketua");
         JButton btnPengurus = menuButton("Login Pengurus");
@@ -22,24 +24,68 @@ public class MainMenuFrame extends JFrame {
         sidebar.add(btnPengurus);
         sidebar.add(btnAnggota);
 
-        JLabel centerText = new JLabel(
-            "<html><center><h1>Welcome</h1><p>Select login role</p></center></html>",
-            SwingConstants.CENTER
-        );
+        // --- 2. CENTER PANEL (KANAN - KONTEN SAMBUTAN) ---
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setBackground(Color.WHITE); // Background putih agar logo bersih
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
+        // A. LOGO UKM
+        JLabel lblLogo = new JLabel();
+        try {
+            // Load gambar dari folder project
+            ImageIcon iconOriginal = new ImageIcon("logo_mm no txt.jpg");
+            
+            // Resize gambar agar rapi (200x200 pixel)
+            Image img = iconOriginal.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            lblLogo.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            lblLogo.setText("Example Logo Here");
+        }
+        centerPanel.add(lblLogo, gbc);
+
+        // B. JUDUL UTAMA
+        gbc.gridy++;
+        JLabel lblTitle = new JLabel("<html><center>SELAMAT DATANG DI<br>SISTEM UKM MULTIMEDIA</center></html>", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        lblTitle.setForeground(new Color(30, 30, 30));
+        centerPanel.add(lblTitle, gbc);
+
+        // C. KATA SAMBUTAN (MOTIVASI)
+        gbc.gridy++;
+        String kataSambutan = "<html><center><p style='width:450px; color:#555555;'>" +
+                "<i>\"Salam Desain!\"</i><br><br>" +
+                "Sistem ini dirancang sebagai wadah manajemen administrasi, " +
+                "portofolio karya, dan database keanggotaan UKM Multimedia.<br><br>" +
+                "Silakan pilih akses login di menu sebelah kiri untuk memulai." +
+                "</p></center></html>";
+        
+        JLabel lblDesc = new JLabel(kataSambutan, SwingConstants.CENTER);
+        lblDesc.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        centerPanel.add(lblDesc, gbc);
+
+        // Masukkan panel ke Frame Utama
         add(sidebar, BorderLayout.WEST);
-        add(centerText, BorderLayout.CENTER);
+        add(centerPanel, BorderLayout.CENTER);
 
+        // --- EVENTS (Aksi Tombol) ---
         btnKetua.addActionListener(e -> openLogin("ketua"));
         btnPengurus.addActionListener(e -> openLogin("pengurus"));
         btnAnggota.addActionListener(e -> openLogin("anggota"));
     }
 
+    // Helper untuk Style Tombol (Agar konsisten Mewah/Gold)
     private JButton menuButton(String text) {
         JButton b = new JButton(text);
         b.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        b.setBackground(new Color(52, 152, 219));
-        b.setForeground(Color.WHITE);
+        b.setBackground(new Color(212, 175, 55)); // Warna Emas (Gold)
+        b.setForeground(Color.BLACK);             // Teks Hitam
+        b.setFocusPainted(false);
+        b.setBorderPainted(false);
+        b.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return b;
     }
 
