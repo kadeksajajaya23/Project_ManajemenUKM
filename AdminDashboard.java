@@ -8,7 +8,7 @@ public class AdminDashboard extends JFrame {
     CardLayout cardLayout;
     JPanel mainContainer; 
     AnggotaDAO dao;
-    Anggota adminLogin; // Data user yang sedang login (PENTING UNTUK EDIT PROFIL SENDIRI)
+    Anggota adminLogin; 
     
     JTable table;
     DefaultTableModel model;
@@ -39,24 +39,28 @@ public class AdminDashboard extends JFrame {
         cardLayout.show(mainContainer, "MENU");
     }
 
-    // --- PANEL MENU ---
+    // ==========================================
+    // 1. PANEL MENU (TOMBOL-TOMBOL)
+    // ==========================================
     private JPanel createMenuPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         Style.stylePanel(panel);
 
+        // Header Sambutan
         JLabel lblWelcome = new JLabel("<html><center>Halo, " + adminLogin.getNama() + "<br>Selamat Datang di Dashboard " + adminLogin.getRole() + "</center></html>", SwingConstants.CENTER);
         lblWelcome.setFont(Style.FONT_HEADER);
         lblWelcome.setForeground(Style.COLOR_ACCENT);
         lblWelcome.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
         panel.add(lblWelcome, BorderLayout.NORTH);
 
+        // Grid Menu Button
         JPanel gridPanel = new JPanel(new GridBagLayout());
         gridPanel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.gridx = 0; gbc.gridy = 0;
 
-        // 1. MENU: DATA PENGURUS (HANYA UNTUK KETUA)
+        // --- A. MENU KHUSUS KETUA (DATA PENGURUS) ---
         if (adminLogin.getRole().equalsIgnoreCase("ketua")) {
             JButton btnPengurus = createBigButton("Data Pengurus", "Cari & Kelola Pengurus");
             btnPengurus.addActionListener(e -> showDataView("Pengurus"));
@@ -64,35 +68,33 @@ public class AdminDashboard extends JFrame {
             gbc.gridx++; 
         }
 
-        // 2. MENU: DATA ANGGOTA (SEMUA ADMIN BISA AKSES)
+        // --- B. MENU DATA ANGGOTA (SEMUA ADMIN) ---
         JButton btnAnggota = createBigButton("Data Anggota", "Cari, Update & Hapus Anggota");
         btnAnggota.addActionListener(e -> showDataView("Anggota"));
         gridPanel.add(btnAnggota, gbc);
         gbc.gridx++;
 
-        // 3. MENU: EXPORT DATA
+        // --- C. MENU EXPORT DATA (SEMUA ADMIN) ---
         JButton btnExport = createBigButton("Laporan / Export", "Simpan Data ke CSV");
         btnExport.addActionListener(e -> processExport());
         gridPanel.add(btnExport, gbc);
-        
-        // 4. MENU KHUSUS PENGURUS: EDIT PROFIL SAYA (Agar bisa update data sendiri)
-        if (adminLogin.getRole().equalsIgnoreCase("pengurus")) {
-            gbc.gridx++;
-            JButton btnEditSelf = createBigButton("Profil Saya", "Update Data Pribadi");
-            btnEditSelf.setBackground(Color.GRAY); // Warna beda dikit biar spesial
-            btnEditSelf.addActionListener(e -> {
-                // Buka Dialog Edit dengan data DIRI SENDIRI (adminLogin)
-                EditDialog dialog = new EditDialog(this, adminLogin);
-                dialog.setVisible(true);
-                if (dialog.isSaved()) {
-                    // Update label sambutan jika nama berubah
-                    lblWelcome.setText("<html><center>Halo, " + adminLogin.getNama() + "<br>Selamat Datang di Dashboard " + adminLogin.getRole() + "</center></html>");
-                }
-            });
-            gridPanel.add(btnEditSelf, gbc);
-        }
-        
-        // 5. TOMBOL LOGOUT
+        gbc.gridx++;
+
+        // --- D. MENU PROFIL SAYA (SEMUA ADMIN: KETUA & PENGURUS) ---
+        // UPDATE: Sekarang tombol ini muncul untuk SEMUA (Ketua & Pengurus)
+        JButton btnEditSelf = createBigButton("Profil Saya", "Update Akun Sendiri");
+        btnEditSelf.setBackground(Color.GRAY); // Pembeda warna
+        btnEditSelf.addActionListener(e -> {
+            EditDialog dialog = new EditDialog(this, adminLogin);
+            dialog.setVisible(true);
+            if (dialog.isSaved()) {
+                // Update teks sambutan jika Nama berubah
+                lblWelcome.setText("<html><center>Halo, " + adminLogin.getNama() + "<br>Selamat Datang di Dashboard " + adminLogin.getRole() + "</center></html>");
+            }
+        });
+        gridPanel.add(btnEditSelf, gbc);
+
+        // --- LOGOUT ---
         JPanel logoutPanel = new JPanel();
         logoutPanel.setOpaque(false);
         JButton btnLogout = new JButton("LOGOUT SYSTEM");
@@ -112,7 +114,9 @@ public class AdminDashboard extends JFrame {
         return panel;
     }
 
-    // --- PANEL DATA ---
+    // ==========================================
+    // 2. PANEL DATA (TABEL)
+    // ==========================================
     private JPanel createDataPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         Style.stylePanel(panel);
@@ -179,7 +183,9 @@ public class AdminDashboard extends JFrame {
         return panel;
     }
 
-    // --- LOGIKA ---
+    // ==========================================
+    // LOGIKA
+    // ==========================================
     private void showDataView(String roleTarget) {
         this.currentViewRole = roleTarget;
         lblDataTitle.setText("MANAJEMEN DATA " + roleTarget.toUpperCase());
@@ -198,7 +204,10 @@ public class AdminDashboard extends JFrame {
                 boolean matchNim = a.getNim().toLowerCase().contains(keyword.toLowerCase());
                 if (!matchNama && !matchNim) continue; 
             }
-            String infoKhusus = (a.getRole().equalsIgnoreCase("pengurus")) ? a.getJabatan() : a.getKelas();
+            String infoKhusus = (a.getRole().equalsIgnoreCase("pengurus") || a.getRole().equalsIgnoreCase("ketua")) 
+                                ? a.getJabatan() 
+                                : a.getKelas();
+                                
             model.addRow(new Object[]{
                 a.getId(), (a.getNomorAnggota() == null ? "-" : a.getNomorAnggota()), 
                 a.getNim(), a.getNama(), infoKhusus, (a.getDivisi() == null ? "-" : a.getDivisi()), 
@@ -239,6 +248,7 @@ public class AdminDashboard extends JFrame {
             fw.write("ID,No Anggota,NIM,Nama,Kelas/Jbt,Divisi,Username,Role\n");
             
             List<Anggota> listExport;
+            // Ketua export semua, Pengurus cuma export anggota
             if(adminLogin.getRole().equalsIgnoreCase("ketua")) {
                 listExport = dao.getAnggotaByRole("pengurus");
                 listExport.addAll(dao.getAnggotaByRole("anggota"));
