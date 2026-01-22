@@ -34,17 +34,29 @@ public class MainMenuFrame extends JFrame {
         gbc.gridy = 0;
 
         // A. LOGO UKM
-        JLabel lblLogo = new JLabel();
-        try {
-            // Load gambar dari folder project
-            ImageIcon iconOriginal = new ImageIcon("logo_mm no txt.jpg");
-            
-            // Resize gambar agar rapi (200x200 pixel)
-            Image img = iconOriginal.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-            lblLogo.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            lblLogo.setText("Example Logo Here");
+        JLabel lblLogo = new JLabel("", SwingConstants.CENTER);
+        
+        // Cek apakah file benar-benar ada
+        java.io.File fileGambar = new java.io.File("logo_mm no txt.jpg");
+        
+        if (fileGambar.exists()) {
+            try {
+                ImageIcon iconOriginal = new ImageIcon(fileGambar.getAbsolutePath());
+                // Resize gambar ke 200x200
+                Image img = iconOriginal.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                lblLogo.setIcon(new ImageIcon(img));
+                System.out.println("SUKSES: Gambar ditemukan di " + fileGambar.getAbsolutePath());
+            } catch (Exception e) {
+                e.printStackTrace();
+                lblLogo.setText("Gagal Load Gambar");
+            }
+        } else {
+            // Jika file tidak ketemu, tampilkan teks merah & print lokasi yang dicari
+            lblLogo.setText("<html><font color='red'>[Gambar Tidak Ditemukan]</font></html>");
+            System.out.println("ERROR: Sistem mencari gambar di: " + fileGambar.getAbsolutePath());
+            System.out.println("Pastikan nama file 'logo_mm no txt.jpg' ada di folder tersebut.");
         }
+        
         centerPanel.add(lblLogo, gbc);
 
         // B. JUDUL UTAMA
