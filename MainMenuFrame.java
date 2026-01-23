@@ -2,85 +2,73 @@ import java.awt.*;
 import javax.swing.*;
 
 public class MainMenuFrame extends JFrame {
-
     public MainMenuFrame() {
         setTitle("Main Menu - Sistem Informasi UKM Multimedia");
-        setSize(950, 600);
+        setSize(1000, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // --- 1. SIDEBAR (KIRI) ---
-        // Menggunakan GridLayout(3, 1) adalah KUNCI agar tombol memenuhi tinggi layar
-        // Baik saat mini maupun maximize, tombol akan selalu terbagi 3 rata memenuhi panel.
-        JPanel sidebar = new JPanel(new GridLayout(3, 1, 15, 15));
-        sidebar.setBackground(new Color(30, 30, 30)); 
-        sidebar.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
-        sidebar.setPreferredSize(new Dimension(260, 0)); 
+        // --- SIDEBAR ---
+        JPanel sidebar = new JPanel(new GridBagLayout());
+        sidebar.setBackground(Style.COLOR_PANEL); 
+        sidebar.setPreferredSize(new Dimension(280, 0)); // Lebar tetap, tinggi mengikuti window
+        sidebar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(60,60,70)));
+
+        // Container Tombol (navPanel)
+        // PERBAIKAN DISINI: 
+        // Tinggi kita naikkan jadi 480 (sebelumnya 300) agar saat maximize tombol terlihat gagah.
+        // GridLayout(3, 1, 15, 15) akan membagi 480px itu untuk 3 tombol.
+        JPanel navPanel = new JPanel(new GridLayout(3, 1, 15, 15));
+        navPanel.setOpaque(false);
+        navPanel.setPreferredSize(new Dimension(240, 480)); 
 
         JButton btnKetua = menuButton("Login Ketua");
         JButton btnPengurus = menuButton("Login Pengurus");
         JButton btnAnggota = menuButton("Login Anggota");
 
-        sidebar.add(btnKetua);
-        sidebar.add(btnPengurus);
-        sidebar.add(btnAnggota);
-
-        // --- 2. CENTER PANEL (KANAN) ---
-        // Menggunakan GridBagLayout agar konten (Logo & Teks) selalu di TENGAH (Center)
-        // Meskipun layar dimaximize, konten tidak akan berantakan/melar.
-        JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBackground(Color.WHITE);
+        navPanel.add(btnKetua); 
+        navPanel.add(btnPengurus); 
+        navPanel.add(btnAnggota);
         
+        // Tambahkan navPanel ke Sidebar (GridBagLayout akan menempatkannya di tengah vertikal/center)
+        sidebar.add(navPanel);
+
+        // --- CENTER PANEL ---
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setBackground(Style.COLOR_BG); 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.CENTER;
 
-        // A. LOGO UKM
+        // Logo
         JLabel lblLogo = new JLabel("", SwingConstants.CENTER);
         java.io.File fileGambar = new java.io.File("logo_mm no txt.jpg");
-        
         if (fileGambar.exists()) {
             try {
                 ImageIcon iconOriginal = new ImageIcon(fileGambar.getAbsolutePath());
-                // Resize gambar ke 220x220
-                Image img = iconOriginal.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
+                // Logo sedikit diperbesar
+                Image img = iconOriginal.getImage().getScaledInstance(240, 240, Image.SCALE_SMOOTH);
                 lblLogo.setIcon(new ImageIcon(img));
-            } catch (Exception e) {
-                lblLogo.setText("Error Loading Image");
-            }
-        } else {
-            lblLogo.setText("<html><font color='red'>[Logo Tidak Ditemukan]</font></html>");
-        }
+            } catch (Exception e) {}
+        } else lblLogo.setText("<html><font color='white'>[Logo Tidak Ditemukan]</font></html>");
         centerPanel.add(lblLogo, gbc);
 
-        // B. JUDUL UTAMA
         gbc.gridy++;
         JLabel lblTitle = new JLabel("<html><center>SELAMAT DATANG DI<br>SISTEM UKM MULTIMEDIA</center></html>", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        lblTitle.setForeground(new Color(30, 30, 30));
+        lblTitle.setFont(Style.FONT_HEADER);
+        lblTitle.setForeground(Style.COLOR_TEXT_MAIN);
         centerPanel.add(lblTitle, gbc);
 
-        // C. KATA SAMBUTAN
         gbc.gridy++;
-        String kataSambutan = "<html><center><p style='width:500px; color:#555555; font-size:11px;'>" +
-                "<i>\"Salam Desain!\"</i><br><br>" +
-                "Sistem ini dirancang sebagai wadah manajemen administrasi, " +
-                "portofolio karya, dan database keanggotaan UKM Multimedia.<br><br>" +
-                "Silakan pilih akses login di menu sebelah kiri untuk memulai." +
-                "</p></center></html>";
-        
-        JLabel lblDesc = new JLabel(kataSambutan, SwingConstants.CENTER);
-        lblDesc.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        JLabel lblDesc = new JLabel("<html><center><p style='width:500px; color:#A0A0A0;'><i>\"Salam Desain!\"</i><br><br>Platform manajemen administrasi & karya digital.<br>Silakan login untuk memulai.</p></center></html>", SwingConstants.CENTER);
+        lblDesc.setFont(Style.FONT_NORMAL);
         centerPanel.add(lblDesc, gbc);
 
-        // Masukkan panel ke Frame Utama
         add(sidebar, BorderLayout.WEST);
         add(centerPanel, BorderLayout.CENTER);
 
-        // --- EVENTS ---
+        // Events
         btnKetua.addActionListener(e -> openLogin("ketua"));
         btnPengurus.addActionListener(e -> openLogin("pengurus"));
         btnAnggota.addActionListener(e -> openLogin("anggota"));
@@ -88,13 +76,9 @@ public class MainMenuFrame extends JFrame {
 
     private JButton menuButton(String text) {
         JButton b = new JButton(text);
-        b.setFont(new Font("Segoe UI", Font.BOLD, 18)); 
-        b.setBackground(new Color(212, 175, 55)); // Warna Emas
-        b.setForeground(Color.BLACK);
-        b.setFocusPainted(false);
-        b.setBorderPainted(false);
-        b.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        // CATATAN: Jangan setPreferredSize tinggi disini agar GridLayout bisa mengontrol tingginya
+        Style.styleButton(b); 
+        // Font kita perbesar sedikit khusus untuk Menu Utama agar seimbang dengan tombol yang besar
+        b.setFont(new Font("Segoe UI", Font.BOLD, 18));
         return b;
     }
 
