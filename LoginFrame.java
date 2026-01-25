@@ -38,7 +38,6 @@ public class LoginFrame extends JFrame {
         cardPanel = new JPanel(new GridBagLayout());
         cardPanel.setBackground(Style.COLOR_PANEL); // Warna Panel Baru
         
-        // BORDER BIRU TIPIS
         cardPanel.setBorder(new CompoundBorder(
             new LineBorder(Style.COLOR_ACCENT, 1, true), 
             new EmptyBorder(30, 40, 30, 40)
@@ -51,10 +50,9 @@ public class LoginFrame extends JFrame {
         gbc.weightx = 1.0;
         int row = 0;
 
-        // HEADER
         lblTitle = new JLabel("LOGIN " + role.toUpperCase(), SwingConstants.CENTER);
         lblTitle.setFont(Style.FONT_HEADER);
-        lblTitle.setForeground(Style.COLOR_ACCENT); // Judul Biru (atau Ungu jika diinginkan)
+        lblTitle.setForeground(Style.COLOR_ACCENT); 
         gbc.gridy = row++; cardPanel.add(lblTitle, gbc);
         
         lblSubtitle = new JLabel("Silakan masuk untuk melanjutkan", SwingConstants.CENTER);
@@ -65,7 +63,6 @@ public class LoginFrame extends JFrame {
 
         gbc.insets = new Insets(0, 0, 15, 0); 
 
-        // INPUTS
         txtNim = createStyledTextField();
         addField(cardPanel, "NIM", txtNim, gbc, row++);
 
@@ -81,7 +78,6 @@ public class LoginFrame extends JFrame {
         cmbJabatan = createStyledCombo(new String[]{"Pilih Jabatan...", "Wakil Ketua", "Sekretaris", "Bendahara", "HUMAS", "Kreatif"});
         addField(cardPanel, "Jabatan", cmbJabatan, gbc, row++);
 
-        // FOTO
         btnPilihFoto = new JButton("Pilih Foto...");
         styleSmallButton(btnPilihFoto);
         lblFotoPreview = new JLabel(" Belum ada file", SwingConstants.LEFT);
@@ -101,7 +97,6 @@ public class LoginFrame extends JFrame {
         styleTextField(txtPass);
         addField(cardPanel, "Password", txtPass, gbc, row++);
 
-        // TOMBOL UTAMA
         gbc.gridy = row++;
         gbc.insets = new Insets(15, 0, 10, 0);
         btnAction = new JButton("MASUK SEKARANG");
@@ -109,7 +104,6 @@ public class LoginFrame extends JFrame {
         btnAction.setPreferredSize(new Dimension(100, 45));
         cardPanel.add(btnAction, gbc);
 
-        // SWITCH
         gbc.gridy = row++;
         gbc.insets = new Insets(0, 0, 0, 0);
         btnSwitch = new JButton("Belum punya akun? Daftar");
@@ -128,7 +122,6 @@ public class LoginFrame extends JFrame {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane);
 
-        // Events
         btnSwitch.addActionListener(e -> { isLoginMode = !isLoginMode; refreshMode(); });
         btnPilihFoto.addActionListener(e -> uploadFoto());
         btnAction.addActionListener(e -> processAction());
@@ -136,7 +129,6 @@ public class LoginFrame extends JFrame {
         refreshMode(); 
     }
 
-    // --- HELPER METHODS ---
     private void addField(JPanel panel, String labelText, JComponent field, GridBagConstraints gbc, int gridy) {
         JLabel lbl = new JLabel(labelText);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -184,7 +176,6 @@ public class LoginFrame extends JFrame {
         btn.setPreferredSize(new Dimension(100, 30));
     }
 
-    // --- LOGIC ---
     private void refreshMode() {
         boolean isReg = !isLoginMode;
         setFieldVisible(txtNim, isReg);
@@ -203,7 +194,6 @@ public class LoginFrame extends JFrame {
         lblSubtitle.setText(isLoginMode ? "Masuk kembali untuk mengakses dashboard" : "Lengkapi data diri untuk bergabung");
         btnAction.setText(isLoginMode ? "MASUK" : "DAFTAR");
         
-        // Link Text Biru
         btnSwitch.setText(isLoginMode ? "<html>Belum punya akun? <font color='#4361EE'>Daftar disini</font></html>" : "<html>Sudah punya akun? <font color='#4361EE'>Login disini</font></html>");
         
         if (role.equalsIgnoreCase("ketua")) setFieldVisible(pnlFoto, false);

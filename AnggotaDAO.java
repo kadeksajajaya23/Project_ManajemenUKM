@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AnggotaDAO {
 
-    // --- GENERATE NOMOR ---
+    // GENERATE NOMOR NOMOR ANGGOTA OTOMATIS BERDASARKAN KELAS
     private String generateNomorAnggota(String kelas) {
         if (kelas == null || kelas.isEmpty()) return null;
         String newID = "MM-" + kelas + "-001";
@@ -24,7 +24,7 @@ public class AnggotaDAO {
         return newID;
     }
 
-    // --- REGISTER ---
+    // REGISTER 
     public void register(Anggota a) {
         String noAnggota = null;
         String initialStatus = "Active"; 
@@ -54,7 +54,7 @@ public class AnggotaDAO {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // --- LOGIN ---
+    // LOGIN 
     public Anggota login(String user, String pass) {
         Anggota a = null;
         String sql = "SELECT * FROM anggota WHERE username=? AND password=?";
@@ -67,7 +67,7 @@ public class AnggotaDAO {
         return a;
     }
 
-    // --- APPROVE ---
+    // APPROVE 
     public void approvePengurus(int id) {
         String sql = "UPDATE anggota SET status='Active' WHERE id=?";
         try (Connection conn = Koneksi.getConnection();
@@ -76,9 +76,8 @@ public class AnggotaDAO {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // --- UPDATE DATA (PERBAIKAN: Termasuk Foto Path) ---
+    // UPDATE DATA 
     public void update(Anggota a) {
-        // Query ditambahkan foto_path=?
         String sql = "UPDATE anggota SET nim=?, nama=?, kelas=?, divisi=?, jabatan=?, username=?, password=?, foto_path=? WHERE id=?";
         try (Connection conn = Koneksi.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -91,7 +90,7 @@ public class AnggotaDAO {
             
             ps.setString(6, a.getUsername());
             ps.setString(7, a.getPassword());
-            ps.setString(8, a.getFotoPath()); // Set path foto baru
+            ps.setString(8, a.getFotoPath()); //
             ps.setInt(9, a.getId());
 
             ps.executeUpdate();

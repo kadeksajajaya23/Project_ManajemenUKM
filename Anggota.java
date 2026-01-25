@@ -38,7 +38,6 @@ public class Anggota {
     public String getFotoPath() { return fotoPath; }
     public void setFotoPath(String fotoPath) { this.fotoPath = fotoPath; }
     
-    // Getter & Setter Status
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 }

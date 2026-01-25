@@ -7,17 +7,17 @@ import javax.swing.*;
 public class EditDialog extends JDialog {
     JTextField txtNim, txtNama, txtUser, txtPass;
     JTextField txtKelas, txtDivisi, txtJabatan;
-    JButton btnSimpan, btnPilihFoto; // Tambah tombol foto
+    JButton btnSimpan, btnPilihFoto; 
     JLabel lblFotoStatus;
     
     Anggota anggota;
     boolean isSaved = false;
-    String newFotoPath = null; // Menyimpan path foto baru jika ada
+    String newFotoPath = null; 
 
     public EditDialog(Frame owner, Anggota a) {
         super(owner, "Edit Data: " + a.getNama(), true);
         this.anggota = a;
-        this.newFotoPath = a.getFotoPath(); // Default path lama
+        this.newFotoPath = a.getFotoPath(); 
         setSize(450, 650);
         setLocationRelativeTo(owner);
         initUI();
@@ -38,7 +38,7 @@ public class EditDialog extends JDialog {
         lblInfo.setFont(new Font("Segoe UI", Font.BOLD, 16));
         panel.add(lblInfo, gbc); nextRow.run();
 
-        // --- FIELD GANTI FOTO (BARU) ---
+        // FIELD GANTI FOTO (BARU)
         panel.add(newLabel("Foto Profil:"), gbc); nextRow.run();
         
         JPanel photoPanel = new JPanel(new BorderLayout(5, 0));
@@ -56,7 +56,6 @@ public class EditDialog extends JDialog {
         photoPanel.add(lblFotoStatus, BorderLayout.CENTER);
         
         panel.add(photoPanel, gbc); nextRow.run();
-        // -------------------------------
 
         panel.add(newLabel("NIM:"), gbc); nextRow.run();
         txtNim = new JTextField(anggota.getNim()); panel.add(txtNim, gbc); nextRow.run();
@@ -86,9 +85,8 @@ public class EditDialog extends JDialog {
 
         add(panel);
 
-        // --- EVENT HANDLER ---
         
-        // Logic Upload Foto Baru
+        // Upload Foto Baru
         btnPilihFoto.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -107,19 +105,19 @@ public class EditDialog extends JDialog {
             }
         });
 
-        // Logic Simpan
+        //  Simpan
         btnSimpan.addActionListener(e -> {
             anggota.setNim(txtNim.getText());
             anggota.setNama(txtNama.getText());
             anggota.setUsername(txtUser.getText());
             anggota.setPassword(txtPass.getText());
-            anggota.setFotoPath(newFotoPath); // Update path foto di objek
+            anggota.setFotoPath(newFotoPath); 
 
             if (txtKelas != null) anggota.setKelas(txtKelas.getText());
             if (txtDivisi != null) anggota.setDivisi(txtDivisi.getText());
             if (txtJabatan != null) anggota.setJabatan(txtJabatan.getText());
 
-            new AnggotaDAO().update(anggota); // Update ke Database
+            new AnggotaDAO().update(anggota); 
             JOptionPane.showMessageDialog(this, "Data Berhasil Diupdate!");
             isSaved = true;
             dispose();

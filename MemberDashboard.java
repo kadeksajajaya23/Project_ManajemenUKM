@@ -61,21 +61,18 @@ public class MemberDashboard extends JFrame {
 
         panel.add(headerPanel, BorderLayout.NORTH);
         
-        // --- GRID MENU BERWARNA ---
         JPanel grid = new JPanel(new GridBagLayout()); 
         grid.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints(); 
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.gridx = 0; gbc.gridy = 0;
         
-        // 1. LIHAT ID CARD (BIRU)
         JButton btnID = createBigButton("Lihat ID Card", "Tampilkan Kartu Digital");
         btnID.setBackground(Style.COLOR_ACCENT); // Biru
         btnID.addActionListener(e -> cardLayout.show(mainContainer, "IDCARD"));
         grid.add(btnID, gbc);
         gbc.gridx++;
 
-        // 2. UBAH DATA (TEAL)
         JButton btnEdit = createBigButton("Ubah Data", "Edit Profil & Password");
         btnEdit.setBackground(Style.COLOR_TEAL); // Teal Hijau
         btnEdit.addActionListener(e -> {
@@ -86,7 +83,6 @@ public class MemberDashboard extends JFrame {
         grid.add(btnEdit, gbc);
         gbc.gridx++;
 
-        // 3. UPLOAD KARYA (UNGU)
         JButton btnUpload = createBigButton("Upload Karya", "Kirim Portofolio Terbaru");
         btnUpload.setBackground(Style.COLOR_PURPLE); // Ungu
         btnUpload.addActionListener(e -> cardLayout.show(mainContainer, "UPLOAD"));
@@ -107,7 +103,6 @@ public class MemberDashboard extends JFrame {
         return panel;
     }
     
-    // --- SISA PANEL HELPER SAMA SEPERTI SEBELUMNYA ---
     private JPanel createIDCardPage() {
         JPanel wrapper = new JPanel(new BorderLayout()); wrapper.setBackground(Style.COLOR_BG);
         JPanel header = createHeaderBack(); wrapper.add(header, BorderLayout.NORTH);
@@ -140,8 +135,20 @@ public class MemberDashboard extends JFrame {
         idCard.add(detailPnl); idCard.add(Box.createVerticalGlue());
         JLabel lblStatus = new JLabel("STATUS: " + user.getStatus().toUpperCase(), SwingConstants.CENTER); lblStatus.setAlignmentX(Component.CENTER_ALIGNMENT); lblStatus.setForeground(new Color(50, 255, 100)); lblStatus.setFont(new Font("Segoe UI", Font.BOLD, 12)); idCard.add(lblStatus); idCard.add(Box.createVerticalStrut(20));
     }
-    private JPanel createDetailRow(String label, String value) { JPanel p = new JPanel(new BorderLayout()); p.setOpaque(false); JLabel l1 = new JLabel(label); l1.setFont(new Font("Segoe UI", Font.PLAIN, 10)); l1.setForeground(Color.LIGHT_GRAY); JLabel l2 = new JLabel(value == null ? "-" : value); l2.setFont(new Font("Segoe UI", Font.BOLD, 14)); l2.setForeground(Color.WHITE); p.add(l1, BorderLayout.NORTH); p.add(l2, BorderLayout.CENTER); return p; }
-    private JPanel createUploadPanel() { JPanel p = new JPanel(new GridBagLayout()); p.setOpaque(false); p.setBorder(BorderFactory.createTitledBorder(new LineBorder(new Color(80, 80, 90)), " Upload Karya ", 0, 0, new Font("Segoe UI", Font.PLAIN, 12), Color.LIGHT_GRAY)); GridBagConstraints g = new GridBagConstraints(); g.insets = new Insets(10, 10, 10, 10); g.gridx = 0; g.gridy = 0; g.fill = GridBagConstraints.HORIZONTAL; JLabel lblInfo = new JLabel("<html><center>Simpan karya terbaikmu<br>ke dalam database.</center></html>", SwingConstants.CENTER); lblInfo.setForeground(Color.WHITE); lblInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12)); p.add(lblInfo, g); g.gridy++; p.add(new JLabel("<html><font color='#aaaaaa'>Judul Karya:</font></html>"), g); g.gridy++; JTextField txtJudul = new JTextField(20); txtJudul.setBackground(new Color(45, 49, 60)); txtJudul.setForeground(Color.WHITE); txtJudul.setCaretColor(Style.COLOR_ACCENT); txtJudul.setBorder(BorderFactory.createMatteBorder(0,0,2,0, Style.COLOR_ACCENT)); p.add(txtJudul, g); g.gridy++; JButton btnUp = new JButton("PILIH FILE & UPLOAD"); Style.styleButton(btnUp); p.add(btnUp, g); btnUp.addActionListener(e -> { if (txtJudul.getText().isEmpty()) { JOptionPane.showMessageDialog(this, "Isi Judul!"); return; } JFileChooser fc = new JFileChooser(); if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { try { File file = fc.getSelectedFile(); File dest = new File("uploads/PORTO_" + System.currentTimeMillis() + "_" + file.getName()); dest.getParentFile().mkdirs(); Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING); new AnggotaDAO().uploadPortofolio(user.getId(), txtJudul.getText(), dest.getPath()); JOptionPane.showMessageDialog(this, "Upload Sukses!"); txtJudul.setText(""); } catch (Exception ex) { ex.printStackTrace(); } } }); return p; }
-    private JButton createBigButton(String title, String subtitle) { JButton btn = new JButton("<html><center><h2>" + title + "</h2><p>" + subtitle + "</p></center></html>"); btn.setPreferredSize(new Dimension(300, 150)); Style.styleButton(btn); return btn; }
-    class GradientCardPanel extends JPanel { @Override protected void paintComponent(Graphics g) { super.paintComponent(g); Graphics2D g2 = (Graphics2D) g; g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); int w = getWidth(); int h = getHeight(); g2.setColor(new Color(35, 39, 50)); g2.fill(new RoundRectangle2D.Double(0, 0, w, h, 30, 30)); GradientPaint gp = new GradientPaint(0, 0, Style.COLOR_ACCENT, w, 0, new Color(114, 9, 183)); g2.setPaint(gp); g2.fill(new RoundRectangle2D.Double(0, 0, w, 80, 30, 30)); g2.fillRect(0, 40, w, 40); g2.setColor(new Color(60, 60, 70)); g2.draw(new RoundRectangle2D.Double(0, 0, w-1, h-1, 30, 30)); g2.setColor(Color.WHITE); g2.setFont(new Font("Segoe UI", Font.BOLD, 16)); FontMetrics fm = g2.getFontMetrics(); String title = "UKM MULTIMEDIA"; int x = (w - fm.stringWidth(title)) / 2; g2.drawString(title, x, 30); g2.setFont(new Font("Segoe UI", Font.PLAIN, 10)); String sub = "Official Member Card"; fm = g2.getFontMetrics(); int x2 = (w - fm.stringWidth(sub)) / 2; g2.drawString(sub, x2, 45); } }
+    private JPanel createDetailRow(String label, String value) { 
+        JPanel p = new JPanel(new BorderLayout()); p.setOpaque(false); 
+        JLabel l1 = new JLabel(label); l1.setFont(new Font("Segoe UI", Font.PLAIN, 10)); l1.setForeground(Color.LIGHT_GRAY); 
+        JLabel l2 = new JLabel(value == null ? "-" : value); l2.setFont(new Font("Segoe UI", Font.BOLD, 14)); l2.setForeground(Color.WHITE); p.add(l1, BorderLayout.NORTH); p.add(l2, BorderLayout.CENTER); return p; }
+    
+    private JPanel createUploadPanel() { 
+        JPanel p = new JPanel(new GridBagLayout()); p.setOpaque(false); p.setBorder(BorderFactory.createTitledBorder(new LineBorder(new Color(80, 80, 90)), " Upload Karya ", 0, 0, new Font("Segoe UI", Font.PLAIN, 12), Color.LIGHT_GRAY)); GridBagConstraints g = new GridBagConstraints(); g.insets = new Insets(10, 10, 10, 10); g.gridx = 0; g.gridy = 0; g.fill = GridBagConstraints.HORIZONTAL; 
+        JLabel lblInfo = new JLabel("<html><center>Simpan karya terbaikmu<br>ke dalam database.</center></html>", SwingConstants.CENTER); lblInfo.setForeground(Color.WHITE); lblInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12)); p.add(lblInfo, g); g.gridy++; p.add(new JLabel("<html><font color='#aaaaaa'>Judul Karya:</font></html>"), g); g.gridy++; 
+        JTextField txtJudul = new JTextField(20); txtJudul.setBackground(new Color(45, 49, 60)); txtJudul.setForeground(Color.WHITE); txtJudul.setCaretColor(Style.COLOR_ACCENT); txtJudul.setBorder(BorderFactory.createMatteBorder(0,0,2,0, Style.COLOR_ACCENT)); p.add(txtJudul, g); g.gridy++; 
+        JButton btnUp = new JButton("PILIH FILE & UPLOAD"); Style.styleButton(btnUp); p.add(btnUp, g); btnUp.addActionListener(e -> { if (txtJudul.getText().isEmpty()) { JOptionPane.showMessageDialog(this, "Isi Judul!"); return; } JFileChooser fc = new JFileChooser(); if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { try { File file = fc.getSelectedFile(); File dest = new File("uploads/PORTO_" + System.currentTimeMillis() + "_" + file.getName()); dest.getParentFile().mkdirs(); Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING); new AnggotaDAO().uploadPortofolio(user.getId(), txtJudul.getText(), dest.getPath()); 
+        JOptionPane.showMessageDialog(this, "Upload Sukses!"); txtJudul.setText(""); } catch (Exception ex) { ex.printStackTrace(); } } }); return p; }
+    
+    private JButton createBigButton(String title, String subtitle) { 
+        JButton btn = new JButton("<html><center><h2>" + title + "</h2><p>" + subtitle + "</p></center></html>"); btn.setPreferredSize(new Dimension(300, 150)); Style.styleButton(btn); return btn; }
+    
+        class GradientCardPanel extends JPanel { @Override protected void paintComponent(Graphics g) { super.paintComponent(g); Graphics2D g2 = (Graphics2D) g; g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); int w = getWidth(); int h = getHeight(); g2.setColor(new Color(35, 39, 50)); g2.fill(new RoundRectangle2D.Double(0, 0, w, h, 30, 30)); GradientPaint gp = new GradientPaint(0, 0, Style.COLOR_ACCENT, w, 0, new Color(114, 9, 183)); g2.setPaint(gp); g2.fill(new RoundRectangle2D.Double(0, 0, w, 80, 30, 30)); g2.fillRect(0, 40, w, 40); g2.setColor(new Color(60, 60, 70)); g2.draw(new RoundRectangle2D.Double(0, 0, w-1, h-1, 30, 30)); g2.setColor(Color.WHITE); g2.setFont(new Font("Segoe UI", Font.BOLD, 16)); FontMetrics fm = g2.getFontMetrics(); String title = "UKM MULTIMEDIA"; int x = (w - fm.stringWidth(title)) / 2; g2.drawString(title, x, 30); g2.setFont(new Font("Segoe UI", Font.PLAIN, 10)); String sub = "Official Member Card"; fm = g2.getFontMetrics(); int x2 = (w - fm.stringWidth(sub)) / 2; g2.drawString(sub, x2, 45); } }
 }

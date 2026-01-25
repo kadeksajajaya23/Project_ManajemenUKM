@@ -43,9 +43,8 @@ public class AdminDashboard extends JFrame {
         cardLayout.show(mainContainer, "MENU");
     }
 
-    // ==========================================
-    // 1. PANEL MENU (LAYOUT BARU: TERPISAH)
-    // ==========================================
+    
+    // 1. PANEL MENU 
     private JPanel createMenuPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         Style.stylePanel(panel);
@@ -78,18 +77,18 @@ public class AdminDashboard extends JFrame {
 
         panel.add(headerPanel, BorderLayout.NORTH);
 
-        // --- GRID MENU BARU ---
+        //  GRID MENU 
         JPanel gridPanel = new JPanel(new GridBagLayout());
         gridPanel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL; 
         
-        // POSISI 1: MENU KHUSUS KETUA (Full Width di Atas)
+        // POSISI 1: MENU KHUSUS KETUA 
         if (adminLogin.getRole().equalsIgnoreCase("ketua")) {
             gbc.gridx = 0; 
             gbc.gridy = 0;
-            gbc.gridwidth = 2; // Membentang 2 kolom
+            gbc.gridwidth = 2; 
             
             JButton btnPengurus = createBigButton("Data Pengurus", "ACC & Kelola Akun Admin");
             btnPengurus.setBackground(Style.COLOR_PURPLE); 
@@ -101,7 +100,7 @@ public class AdminDashboard extends JFrame {
             gridPanel.add(Box.createVerticalStrut(20), gbc);
         }
 
-        // Reset grid untuk menu umum (2 Kolom)
+        //  menu umum 
         gbc.gridwidth = 1; 
         int row = (adminLogin.getRole().equalsIgnoreCase("ketua")) ? 2 : 0;
 
@@ -154,7 +153,7 @@ public class AdminDashboard extends JFrame {
         return panel;
     }
 
-    // --- PANEL PROFIL (ID CARD) ---
+    //  PANEL PROFIL (ID CARD)
     private JPanel createProfilePanel() {
         JPanel wrapper = new JPanel(new BorderLayout()); wrapper.setBackground(Style.COLOR_BG);
         JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT)); header.setOpaque(false); header.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -191,7 +190,7 @@ public class AdminDashboard extends JFrame {
 
     private JPanel detailLbl(String label, String val) { JPanel p = new JPanel(new BorderLayout()); p.setOpaque(false); JLabel l1 = new JLabel(label); l1.setForeground(Color.LIGHT_GRAY); l1.setFont(new Font("Segoe UI", Font.PLAIN, 10)); JLabel l2 = new JLabel(val); l2.setForeground(Color.WHITE); l2.setFont(new Font("Segoe UI", Font.BOLD, 14)); p.add(l1, BorderLayout.NORTH); p.add(l2, BorderLayout.CENTER); return p; }
     
-    // --- DATA & PORTO ---
+    // DATA & PORTO 
     private JPanel createDataPanel() {
         JPanel panel = new JPanel(new BorderLayout()); Style.stylePanel(panel);
         JPanel header = new JPanel(new BorderLayout()); header.setOpaque(false); header.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -243,7 +242,7 @@ public class AdminDashboard extends JFrame {
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
             
-            // Pastikan ekstensi .csv
+            //  .csv
             if (!fileToSave.getAbsolutePath().endsWith(".csv")) {
                 fileToSave = new File(fileToSave.getAbsolutePath() + ".csv");
             }
@@ -262,7 +261,6 @@ public class AdminDashboard extends JFrame {
                 // Tulis Baris Data
                 for(Anggota a : list) {
                     String info = a.getRole().equalsIgnoreCase("pengurus") ? a.getJabatan() : a.getKelas();
-                    // Handle null values untuk mencegah error "null" di CSV
                     String safeInfo = (info == null) ? "-" : info;
                     
                     fw.write(a.getId() + "," + 

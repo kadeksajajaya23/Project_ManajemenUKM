@@ -1,6 +1,6 @@
 public class Portofolio {
     private int id;
-    private String namaAnggota; // Kita butuh nama pengupload
+    private String namaAnggota; 
     private String judul;
     private String filePath;
 

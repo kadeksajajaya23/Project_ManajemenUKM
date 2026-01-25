@@ -9,16 +9,11 @@ public class MainMenuFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // --- SIDEBAR ---
         JPanel sidebar = new JPanel(new GridBagLayout());
         sidebar.setBackground(Style.COLOR_PANEL); 
-        sidebar.setPreferredSize(new Dimension(280, 0)); // Lebar tetap, tinggi mengikuti window
+        sidebar.setPreferredSize(new Dimension(280, 0));
         sidebar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(60,60,70)));
 
-        // Container Tombol (navPanel)
-        // PERBAIKAN DISINI: 
-        // Tinggi kita naikkan jadi 480 (sebelumnya 300) agar saat maximize tombol terlihat gagah.
-        // GridLayout(3, 1, 15, 15) akan membagi 480px itu untuk 3 tombol.
         JPanel navPanel = new JPanel(new GridLayout(3, 1, 15, 15));
         navPanel.setOpaque(false);
         navPanel.setPreferredSize(new Dimension(240, 480)); 
@@ -31,23 +26,19 @@ public class MainMenuFrame extends JFrame {
         navPanel.add(btnPengurus); 
         navPanel.add(btnAnggota);
         
-        // Tambahkan navPanel ke Sidebar (GridBagLayout akan menempatkannya di tengah vertikal/center)
         sidebar.add(navPanel);
 
-        // --- CENTER PANEL ---
         JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setBackground(Style.COLOR_BG); 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.CENTER;
 
-        // Logo
         JLabel lblLogo = new JLabel("", SwingConstants.CENTER);
         java.io.File fileGambar = new java.io.File("logo_mm no txt.jpg");
         if (fileGambar.exists()) {
             try {
                 ImageIcon iconOriginal = new ImageIcon(fileGambar.getAbsolutePath());
-                // Logo sedikit diperbesar
                 Image img = iconOriginal.getImage().getScaledInstance(240, 240, Image.SCALE_SMOOTH);
                 lblLogo.setIcon(new ImageIcon(img));
             } catch (Exception e) {}
@@ -77,7 +68,6 @@ public class MainMenuFrame extends JFrame {
     private JButton menuButton(String text) {
         JButton b = new JButton(text);
         Style.styleButton(b); 
-        // Font kita perbesar sedikit khusus untuk Menu Utama agar seimbang dengan tombol yang besar
         b.setFont(new Font("Segoe UI", Font.BOLD, 18));
         return b;
     }
