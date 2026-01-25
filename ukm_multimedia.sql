@@ -13,7 +13,7 @@ CREATE TABLE anggota (
     password VARCHAR(50) NOT NULL,
     foto_path VARCHAR(255),
     role VARCHAR(20) DEFAULT 'Anggota',
-    status VARCHAR(20) DEFAULT 'Active'  -- KOLOM BARU UNTUK VALIDASI
+    status VARCHAR(20) DEFAULT 'Active'  
 );
 
 CREATE TABLE portofolio (
